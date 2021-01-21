@@ -555,7 +555,7 @@ def thermal_speed(
     ndim=3,
 ) -> u.m / u.s:
     r"""
-    Return the most probable speed for a particle within a Maxwellian
+    Returns the thermal speed of a particle within a Maxwellian
     distribution.
 
     **Aliases:** `vth_`
@@ -563,51 +563,51 @@ def thermal_speed(
     Parameters
     ----------
     T : ~astropy.units.Quantity
-        The particle temperature in either kelvin or energy per particle
+        The particle temperature in either kelvin or energy per particle.
 
     particle : ~plasmapy.particles.Particle
-        Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4). If no
+        Representation of the particle species (e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
         charge state information is provided, then the particles are
         assumed to be singly charged.
 
     method : str, optional
         Method to be used for calculating the thermal speed. Options are
-        `'most_probable'` (default), `'rms'`, and `'mean_magnitude'`.
+        ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
 
-    mass : ~astropy.units.Quantity
+    mass : ~astropy.units.Quantity, optional
         The particle's mass override. Defaults to NaN and if so, doesn't do
         anything, but if set, overrides mass acquired from `particle`. Useful
         with relative velocities of particles.
 
-    ndim : int
-        Dimensionality of space in which to calculate thermal velocity. Valid
-        values are 1,2,3.
+    ndim : int, optional
+        The dimensionality of the space in which to calculate thermal velocity. Valid
+        values are ``1``, ``2``, and ``3``.
 
     Returns
     -------
     V : ~astropy.units.Quantity
-        particle thermal speed
+        The thermal speed of the particle within the Maxwellian distribution.
 
     Raises
     ------
     TypeError
-        The particle temperature is not a ~astropy.units.Quantity
+        If the particle temperature is not a ~astropy.units.Quantity.
 
     ~astropy.units.UnitConversionError
         If the particle temperature is not in units of temperature or
-        energy per particle
+        energy per particle.
 
     ValueError
-        The particle temperature is invalid or particle cannot be used to
-        identify an isotope or particle
+        If the particle temperature is invalid or ``particle`` cannot be used to
+        identify an isotope or particle.
 
     Warns
     -----
-    RelativityWarning
-        If the ion sound speed exceeds 5% of the speed of light, or
+    : RelativityWarning
+        If the particle's thermal speed exceeds 5% of the speed of light.
 
-    ~astropy.units.UnitsWarning
+    : ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed.
 
     Notes
@@ -642,12 +642,12 @@ def thermal_speed(
          - 3
          - :math:`8/\pi`
 
-    The definition of thermal velocity varies by
-    the square root of two depending on whether or not this velocity
+    Note: The definition of thermal velocity varies by a factor of
+    :math:`\sqrt{2}` depending on whether or not this velocity
     absorbs that factor in the expression for a Maxwellian
     distribution.  In particular, the expression given in the NRL
-    Plasma Formulary [1] is a square root of two smaller than the
-    result from this function.
+    Plasma Formulary [1] is lower than the expression in this function
+    by a factor of :math:`\sqrt{2}`.
 
     Examples
     --------
@@ -665,6 +665,11 @@ def thermal_speed(
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
 
+    References
+    ----------
+    .. [1] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
+       revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
+       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
     """
     m = mass if np.isfinite(mass) else particles.particle_mass(particle)
 
@@ -672,11 +677,11 @@ def thermal_speed(
     try:
         coef = _coefficients[ndim]
     except KeyError:
-        raise ValueError("{ndim} is not a supported value for ndim in thermal_speed")
+        raise ValueError("ndim must be 1, 2, or 3 (not {ndim}).")
     try:
         coef = coef[method]
     except KeyError:
-        raise ValueError("Method {method} not supported in thermal_speed")
+        raise ValueError("method must be 'most_probable', 'rms', or 'mean_magnitude' (not {method}).")
 
     return np.sqrt(coef * k_B * T / m)
 
