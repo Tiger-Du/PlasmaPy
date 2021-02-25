@@ -746,6 +746,16 @@ def resistivity(
     """
     Calculate the resistivity.
 
+    The resistivity (:math:`\alpha`) of a plasma is defined by
+    
+    .. math::
+        \alpha = \frac{\hat{\alpha}}{n_{e} * e^2 * \frac{\tau_{e}}{m_{e}}}
+
+    where :math:`\hat{\alpha}` is the non-dimensional resistivity,
+    :math:`n_e` is the electron number density of the plasma,
+    :math:`e` is Euler's number, :math:`\tau_{e}` is the fundamental electron collision period,
+    and :math:`m_{e}` is the mass of an electron.
+
     Notes
     -----
 
@@ -800,7 +810,19 @@ def thermoelectric_conductivity(
     theta=None,
     coulomb_log_method="classical",
 ):
-    """Calculate the thermoelectric conductivity."""
+    """
+    Calculate the thermoelectric conductivity.
+    
+    The thermoelectric conductivity (:math:`\hat{\beta}`) of a plasma is defined by
+    
+    .. math::
+        \alpha = \frac{\hat{\alpha}}{n_{e} * e^2 * \frac{\tau_{e}}{m_{e}}}
+
+    where :math:`\hat{\alpha}` is the non-dimensional resistivity,
+    :math:`n_e` is the electron number density of the plasma,
+    :math:`e` is Euler's number, :math:`\tau_{e}` is the fundamental electron collision period,
+    and :math:`m_{e}` is the mass of an electron.
+    """
     ct = ClassicalTransport(
         T_e,
         n_e,
